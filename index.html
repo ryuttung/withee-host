@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>withee · 대시보드</title>
+<style>
+@font-face{font-family:'Mapo';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/MapoFlowerIslandA.woff') format('woff');font-weight:normal;font-display:swap}
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --cream:#f2f0eb;--cer:#edebe9;--w:#fff;
+  --deep:#382D25;--mid:#432F20;--house:#2A1F17;
+  --wc:#E7E0D9;--wcs:rgba(231,224,217,0.70);
+  --gold:#cba258;
+  --tb:rgba(0,0,0,0.82);--ts:rgba(0,0,0,0.42);--tss:rgba(0,0,0,0.25);
+}
+html{font-size:62.5%}
+body{font-family:'Mapo',Georgia,serif;background:var(--cream);color:var(--tb);max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:8rem}
+
+/* HEADER */
+.hdr{background:var(--house);padding:1.6rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.hdr-logo{font-family:'Mapo',serif;font-size:2rem;color:var(--wc);letter-spacing:.08em}
+.hdr-avatar{width:3.2rem;height:3.2rem;border-radius:50%;background:var(--mid);display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:var(--wc);cursor:pointer}
+
+/* EVENT BANNER */
+.evt-banner{background:var(--deep);padding:2rem 2rem 1.6rem;color:#fff}
+.evt-names{font-family:'Mapo',serif;font-size:2rem;color:var(--wc);margin-bottom:.3rem}
+.evt-date{font-family:'Mapo',serif;font-size:1.3rem;color:var(--wcs);letter-spacing:.06em}
+.evt-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.6rem}
+.stat-card{background:var(--wc);border-radius:1.2rem;padding:1.2rem;text-align:center}
+.stat-num{font-family:'Mapo',serif;font-size:2.4rem;color:var(--house);line-height:1}
+.stat-lbl{font-family:'Mapo',serif;font-size:1.1rem;color:rgba(42,31,23,.5);margin-top:.3rem}
+
+/* TABS */
+.tabs{display:flex;background:var(--w);border-bottom:1px solid rgba(56,45,37,.1);position:sticky;top:5.6rem;z-index:40}
+.tab{flex:1;padding:1.4rem .5rem;font-family:'Mapo',serif;font-size:1.2rem;color:var(--ts);text-align:center;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;letter-spacing:.04em}
+.tab.active{color:var(--deep);border-bottom-color:var(--deep)}
+
+/* PANELS */
+.panel{display:none;padding:2rem}
+.panel.active{display:block}
+.sec-ttl{font-family:'Mapo',serif;font-size:1.6rem;color:var(--deep);margin-bottom:1.6rem}
+
+/* HOME */
+.dday-card{background:var(--w);border-radius:1.6rem;padding:2.4rem;text-align:center;margin-bottom:1.6rem;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.dday-num{font-family:'Mapo',serif;font-size:5.6rem;color:var(--deep);line-height:1}
+.dday-lbl{font-family:'Mapo',serif;font-size:1.3rem;color:var(--ts);letter-spacing:.1em;margin-top:.4rem}
+.dday-date{font-family:'Mapo',serif;font-size:1.5rem;color:var(--mid);margin-top:.8rem}
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.6rem}
+.quick-card{background:var(--w);border-radius:1.4rem;padding:1.8rem 1.6rem;box-shadow:0 1px 3px rgba(0,0,0,.07);cursor:pointer;transition:all .2s}
+.quick-card:active{transform:scale(.97)}
+.qc-num{font-family:'Mapo',serif;font-size:2.8rem;color:var(--deep);line-height:1;margin-top:.8rem}
+.qc-lbl{font-family:'Mapo',serif;font-size:1.2rem;color:var(--ts);margin-top:.3rem}
+.qc-new{display:inline-block;background:var(--gold);color:#fff;font-size:1rem;padding:.2rem .6rem;border-radius:.6rem;margin-top:.4rem}
+.link-card{background:var(--w);border-radius:1.4rem;padding:1.8rem 1.6rem;box-shadow:0 1px 3px rgba(0,0,0,.07);display:flex;align-items:center;gap:1.2rem}
+.link-url{font-family:'Mapo',serif;font-size:1.3rem;color:var(--ts);flex:1;word-break:break-all}
+.link-copy{background:var(--deep);color:var(--wc);border:none;border-radius:50px;padding:.8rem 1.6rem;font-family:'Mapo',serif;font-size:1.2rem;cursor:pointer;white-space:nowrap;transition:all .2s}
+.link-copy:active{transform:scale(.95)}
+
+/* PHOTO PANEL */
+.photo-toolbar{display:flex;gap:.8rem;margin-bottom:1.6rem;align-items:center}
+.photo-cnt{font-family:'Mapo',serif;font-size:1.3rem;color:var(--ts);flex:1}
+.tb-btn{border:1px solid rgba(56,45,37,.18);border-radius:50px;padding:.7rem 1.4rem;font-family:'Mapo',serif;font-size:1.2rem;color:var(--deep);background:transparent;cursor:pointer;transition:all .2s;white-space:nowrap}
+.tb-btn.pri{background:var(--deep);color:var(--wc);border-color:var(--deep)}
+.tb-btn:active{transform:scale(.95)}
+
+/* GRID VIEW */
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;border-radius:1.2rem;overflow:hidden;margin-bottom:2rem}
+.ph-item{position:relative;aspect-ratio:1;overflow:hidden;cursor:pointer;background:var(--cer)}
+.ph-thumb{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.ph-check{position:absolute;top:.5rem;right:.5rem;width:2rem;height:2rem;border-radius:50%;border:2px solid rgba(255,255,255,.8);background:transparent}
+.ph-item.selected .ph-check{background:var(--gold);border-color:var(--gold);display:flex;align-items:center;justify-content:center}
+.ph-item.selected .ph-check::after{content:'✓';font-size:1.1rem;color:#fff}
+.ph-name-badge{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(26,18,12,.6));padding:.4rem .5rem .5rem;font-family:'Mapo',serif;font-size:1rem;color:#fff}
+.ph-count-badge{position:absolute;bottom:.5rem;right:.5rem;background:rgba(26,18,12,.72);color:#fff;font-family:'Mapo',serif;font-size:1.1rem;width:2.4rem;height:2.4rem;border-radius:50%;display:flex;align-items:center;justify-content:center}
+
+/* LIST VIEW */
+.sender-list{display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem}
+.sender-row{background:var(--w);border-radius:1.2rem;padding:1.4rem 1.6rem;display:flex;align-items:center;gap:1.2rem;box-shadow:0 1px 2px rgba(0,0,0,.06);cursor:pointer;transition:all .2s}
+.sender-row:active{transform:scale(.98)}
+.sender-av{width:3.6rem;height:3.6rem;border-radius:50%;background:var(--cer);display:flex;align-items:center;justify-content:center;font-family:'Mapo',serif;font-size:1.4rem;color:var(--deep);flex-shrink:0}
+.sender-info{flex:1}
+.sender-name{font-family:'Mapo',serif;font-size:1.5rem;color:var(--deep)}
+.sender-meta{font-family:'Mapo',serif;font-size:1.2rem;color:var(--ts);margin-top:.2rem}
+.sender-cnt{font-family:'Mapo',serif;font-size:2rem;color:var(--mid)}
+
+/* FOLDER VIEW */
+.folder-view{display:none}
+.folder-header{display:flex;align-items:center;gap:1.2rem;margin-bottom:2rem}
+.back-btn{background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:.5rem;font-family:'Mapo',serif;font-size:1.4rem;color:var(--deep);padding:.4rem 0}
+.folder-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;border-radius:1.2rem;overflow:hidden}
+.folder-ph{aspect-ratio:1;background:var(--cer);cursor:pointer;display:flex;align-items:center;justify-content:center}
+
+/* GUESTBOOK */
+.guest-list{display:flex;flex-direction:column;gap:1.2rem}
+.guest-card{background:var(--w);border-radius:1.4rem;padding:1.8rem 1.6rem;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.gc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.gc-name{font-family:'Mapo',serif;font-size:1.5rem;color:var(--deep)}
+.gc-time{font-family:'Mapo',serif;font-size:1.1rem;color:var(--tss)}
+.gc-msg{font-family:'Mapo',serif;font-size:1.45rem;color:var(--ts);line-height:1.8}
+
+/* QR */
+.qr-card{background:var(--w);border-radius:1.6rem;padding:2.4rem;text-align:center;margin-bottom:1.6rem;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.qr-box{width:18rem;height:18rem;margin:0 auto 2rem;background:var(--cer);border-radius:1.2rem;display:flex;align-items:center;justify-content:center}
+.qr-url{font-family:'Mapo',serif;font-size:1.3rem;color:var(--ts);margin-bottom:2rem}
+.qr-btns{display:flex;gap:1rem}
+.qr-btn{flex:1;border:1px solid rgba(56,45,37,.18);border-radius:50px;padding:1.2rem;font-family:'Mapo',serif;font-size:1.3rem;color:var(--deep);background:transparent;cursor:pointer;transition:all .2s}
+.qr-btn.pri{background:var(--deep);color:var(--wc);border-color:var(--deep)}
+.qr-btn:active{transform:scale(.95)}
+.info-card{background:var(--w);border-radius:1.4rem;padding:1.8rem 1.6rem;box-shadow:0 1px 3px rgba(0,0,0,.07);margin-bottom:1.2rem}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:.8rem 0;border-bottom:1px solid rgba(56,45,37,.06)}
+.info-row:last-child{border-bottom:none}
+.info-key{font-family:'Mapo',serif;font-size:1.3rem;color:var(--ts)}
+.info-val{font-family:'Mapo',serif;font-size:1.3rem;color:var(--deep)}
+
+/* MY PAGE */
+.my-section{margin-bottom:2.4rem}
+.my-sec-title{font-family:'Mapo',serif;font-size:1.2rem;letter-spacing:.14em;color:var(--tss);margin-bottom:1rem}
+.toggle-list{background:var(--w);border-radius:1.4rem;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:1.5rem 1.8rem;border-bottom:1px solid rgba(56,45,37,.06);cursor:pointer}
+.toggle-row:last-child{border-bottom:none}
+.toggle-row.has-arrow{cursor:pointer}
+.tr-left{display:flex;align-items:center;gap:1.2rem}
+.tr-label{font-family:'Mapo',serif;font-size:1.5rem;color:var(--deep)}
+.tr-sub{font-family:'Mapo',serif;font-size:1.1rem;color:var(--ts);margin-top:.2rem}
+.toggle-switch{position:relative;width:4.4rem;height:2.4rem;flex-shrink:0}
+.toggle-switch input{opacity:0;width:0;height:0;position:absolute}
+.toggle-slider{position:absolute;inset:0;background:rgba(56,45,37,.15);border-radius:50px;transition:.3s;cursor:pointer}
+.toggle-slider::before{content:'';position:absolute;width:2rem;height:2rem;left:.2rem;top:.2rem;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle-switch input:checked + .toggle-slider{background:var(--gold)}
+.toggle-switch input:checked + .toggle-slider::before{transform:translateX(2rem)}
+.tr-arrow{color:var(--tss);font-size:1.4rem}
+.my-profile-card{background:var(--w);border-radius:1.4rem;padding:2rem;display:flex;align-items:center;gap:1.6rem;box-shadow:0 1px 3px rgba(0,0,0,.07);margin-bottom:1.6rem}
+.my-avatar{width:5.6rem;height:5.6rem;border-radius:50%;background:var(--deep);display:flex;align-items:center;justify-content:center;font-size:2rem;color:var(--wc)}
+.my-name{font-family:'Mapo',serif;font-size:1.8rem;color:var(--deep)}
+.my-email{font-family:'Mapo',serif;font-size:1.3rem;color:var(--ts);margin-top:.3rem}
+.my-edit-btn{margin-left:auto;border:1px solid rgba(56,45,37,.18);border-radius:50px;padding:.6rem 1.4rem;font-family:'Mapo',serif;font-size:1.2rem;color:var(--deep);background:transparent;cursor:pointer}
+
+/* TOAST */
+.toast{position:fixed;bottom:9rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--house);color:var(--wc);font-family:'Mapo',serif;font-size:1.4rem;padding:1.2rem 2.4rem;border-radius:50px;opacity:0;transition:all .3s;z-index:999;white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--w);border-top:1px solid rgba(56,45,37,.08);display:flex;padding:1rem 0 1.4rem;z-index:50;box-shadow:0 -4px 16px rgba(0,0,0,.06)}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:.4rem;cursor:pointer;padding:.4rem 0}
+.bnav-lbl{font-family:'Mapo',serif;font-size:1rem;color:var(--ts);letter-spacing:.04em}
+.bnav-item.active .bnav-lbl{color:var(--deep)}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <span class="hdr-logo">withee</span>
+  <div class="hdr-avatar" onclick="openMyPage()">이</div>
+</header>
+
+<div class="evt-banner">
+  <p class="evt-names">이완 ♥ 성희주</p>
+  <p class="evt-date">2026 · 09 · 05 · 토요일 낮 12시</p>
+  <div class="evt-stats">
+    <div class="stat-card"><div class="stat-num" id="ddayStat">--</div><div class="stat-lbl">남은 날</div></div>
+    <div class="stat-card"><div class="stat-num">47</div><div class="stat-lbl">받은 사진</div></div>
+    <div class="stat-card"><div class="stat-num">12</div><div class="stat-lbl">방명록</div></div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('home',this)">홈</div>
+  <div class="tab" onclick="switchTab('photos',this)">사진</div>
+  <div class="tab" onclick="switchTab('guest',this)">방명록</div>
+  <div class="tab" onclick="switchTab('qr',this)">QR</div>
+
+</div>
+
+<!-- HOME -->
+<div class="panel active" id="panel-home">
+  <div class="dday-card">
+    <div class="dday-num" id="ddayNum">--</div>
+    <div class="dday-lbl">DAYS TO GO</div>
+    <div class="dday-date">2026년 9월 5일 (토)</div>
+  </div>
+  <div class="quick-grid">
+    <div class="quick-card" onclick="switchTabById('photos')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#382D25" stroke-width="1.5"><rect x="2" y="6" width="20" height="15" rx="3"/><circle cx="9" cy="13" r="2.5"/><path d="M2 17l5-4 3 3 4-4 8 6"/><path d="M15 3l2 3h4"/></svg>
+      <div class="qc-num">47</div>
+      <div class="qc-lbl">사진</div>
+      <div class="qc-new">+5 새로 도착</div>
+    </div>
+    <div class="quick-card" onclick="switchTabById('guest')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#382D25" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <div class="qc-num">12</div>
+      <div class="qc-lbl">방명록</div>
+      <div class="qc-new">+2 새로 도착</div>
+    </div>
+    <div class="quick-card" onclick="showToast('참석 인원 관리 준비 중')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#382D25" stroke-width="1.5"><circle cx="9" cy="7" r="3"/><path d="M3 20c0-3.314 2.686-5 6-5"/><circle cx="17" cy="10" r="3"/><path d="M13 20c0-2.21 1.79-4 4-4s4 1.79 4 4"/></svg>
+      <div class="qc-num">38</div>
+      <div class="qc-lbl">참석 인원</div>
+    </div>
+    <div class="quick-card" onclick="switchTabById('qr')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#382D25" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/><rect x="18" y="18" width="3" height="3"/></svg>
+      <div class="qc-num">QR</div>
+      <div class="qc-lbl">공유하기</div>
+    </div>
+  </div>
+  <div class="link-card" style="justify-content:space-between">
+    <div>
+      <div style="font-family:'Mapo',serif;font-size:1.1rem;color:var(--tss);margin-bottom:.3rem;letter-spacing:.06em">참석자용</div>
+      <div class="link-url" style="margin:0">withee-mu.vercel.app</div>
+    </div>
+    <div style="display:flex;gap:.8rem;flex-shrink:0;margin-left:auto">
+      <button class="link-copy" style="background:transparent;color:var(--deep);border:1px solid rgba(56,45,37,.22)" onclick="copyLink()">복사</button>
+      <button class="link-copy" onclick="openLink('https://withee-mu.vercel.app/')">열기</button>
+    </div>
+  </div>
+</div>
+
+<!-- PHOTOS -->
+<div class="panel" id="panel-photos">
+  <!-- 메인 뷰 -->
+  <div id="photoMain">
+    <div class="photo-toolbar">
+      <span class="photo-cnt" id="photoCnt">총 47장 · 15명</span>
+      <button class="tb-btn" id="viewToggleBtn" onclick="toggleView()">목록보기</button>
+      <button class="tb-btn pri" onclick="showToast('다운로드 준비 중...')">전체 저장</button>
+    </div>
+    <!-- GRID -->
+    <div class="photo-grid" id="photoGrid"></div>
+    <!-- LIST -->
+    <div class="sender-list" id="senderList" style="display:none"></div>
+  </div>
+  <!-- 폴더 뷰 -->
+  <div class="folder-view" id="folderView">
+    <div class="folder-header">
+      <button class="back-btn" onclick="closeFolder()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#382D25" stroke-width="1.8"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        뒤로
+      </button>
+      <span style="font-family:'Mapo',serif;font-size:1.6rem;color:var(--deep)" id="folderName"></span>
+    </div>
+    <div class="folder-grid" id="folderGrid"></div>
+  </div>
+</div>
+
+<!-- GUESTBOOK -->
+<div class="panel" id="panel-guest">
+  <p class="sec-ttl">방명록 <span style="color:var(--ts);font-size:1.3rem">12건</span></p>
+  <div class="guest-list" id="guestList"></div>
+</div>
+
+<!-- QR -->
+<div class="panel" id="panel-qr">
+  <div class="qr-card">
+    <div class="qr-box">
+      <svg width="150" height="150" viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+        <rect width="150" height="150" fill="white"/>
+        <rect x="10" y="10" width="40" height="40" rx="4" fill="#382D25"/><rect x="16" y="16" width="28" height="28" rx="2" fill="white"/><rect x="20" y="20" width="20" height="20" rx="1" fill="#382D25"/>
+        <rect x="100" y="10" width="40" height="40" rx="4" fill="#382D25"/><rect x="106" y="16" width="28" height="28" rx="2" fill="white"/><rect x="110" y="20" width="20" height="20" rx="1" fill="#382D25"/>
+        <rect x="10" y="100" width="40" height="40" rx="4" fill="#382D25"/><rect x="16" y="106" width="28" height="28" rx="2" fill="white"/><rect x="20" y="110" width="20" height="20" rx="1" fill="#382D25"/>
+        <g fill="#382D25">
+          <rect x="58" y="10" width="6" height="6" rx="1"/><rect x="66" y="10" width="6" height="6" rx="1"/><rect x="74" y="18" width="6" height="6" rx="1"/>
+          <rect x="58" y="26" width="6" height="6" rx="1"/><rect x="74" y="10" width="6" height="6" rx="1"/><rect x="66" y="34" width="6" height="6" rx="1"/>
+          <rect x="10" y="58" width="6" height="6" rx="1"/><rect x="26" y="58" width="6" height="6" rx="1"/><rect x="10" y="74" width="6" height="6" rx="1"/>
+          <rect x="34" y="66" width="6" height="6" rx="1"/><rect x="18" y="82" width="6" height="6" rx="1"/>
+          <rect x="58" y="58" width="6" height="6" rx="1"/><rect x="74" y="66" width="6" height="6" rx="1"/><rect x="58" y="74" width="6" height="6" rx="1"/>
+          <rect x="82" y="58" width="6" height="6" rx="1"/><rect x="90" y="66" width="6" height="6" rx="1"/>
+          <rect x="106" y="66" width="6" height="6" rx="1"/><rect x="122" y="58" width="6" height="6" rx="1"/><rect x="114" y="74" width="6" height="6" rx="1"/>
+          <rect x="58" y="90" width="6" height="6" rx="1"/><rect x="74" y="98" width="6" height="6" rx="1"/><rect x="66" y="106" width="6" height="6" rx="1"/>
+          <rect x="90" y="114" width="6" height="6" rx="1"/><rect x="106" y="98" width="6" height="6" rx="1"/><rect x="122" y="90" width="6" height="6" rx="1"/>
+          <rect x="58" y="122" width="6" height="6" rx="1"/><rect x="82" y="130" width="6" height="6" rx="1"/><rect x="106" y="122" width="6" height="6" rx="1"/>
+        </g>
+        <rect x="60" y="60" width="30" height="30" rx="4" fill="white" stroke="#382D25" stroke-width="1.5"/>
+        <text x="75" y="81" text-anchor="middle" font-size="15" fill="#382D25" font-family="Georgia,serif" font-style="italic">w</text>
+      </svg>
+    </div>
+    <p class="qr-url">withee-mu.vercel.app</p>
+    <div class="qr-btns">
+      <button class="qr-btn" onclick="copyLink()">링크 복사</button>
+      <button class="qr-btn pri" onclick="showToast('QR 이미지 저장됨')">이미지 저장</button>
+    </div>
+  </div>
+  <div class="info-card">
+    <div class="info-row"><span class="info-key">이벤트 유형</span><span class="info-val">결혼식</span></div>
+    <div class="info-row"><span class="info-key">업로드 마감</span><span class="info-val">2026. 09. 12</span></div>
+    <div class="info-row"><span class="info-key">저장 플랜</span><span class="info-val">7일 무료</span></div>
+    <div class="info-row"><span class="info-key">총 방문자</span><span class="info-val">238명</span></div>
+  </div>
+  <button class="tb-btn pri" style="width:100%;padding:1.4rem;font-size:1.5rem;border-radius:50px" onclick="showToast('준비 중인 기능이에요')">QR 실물 제작 신청</button>
+</div>
+
+<!-- MY PAGE -->
+<div id="panel-my" style="display:none;position:fixed;inset:0;z-index:200;background:var(--cream);max-width:480px;margin:0 auto;overflow-y:auto">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:1.6rem 2rem;background:var(--house);position:sticky;top:0;z-index:10">
+    <span style="font-family:'Mapo',serif;font-size:2rem;color:var(--wc);letter-spacing:.08em">withee</span>
+    <button onclick="closeMyPage()" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;padding:.4rem">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E7E0D9" stroke-width="1.8"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div style="padding:2rem">
+  <div class="my-profile-card">
+    <div class="my-avatar">이</div>
+    <div>
+      <div class="my-name">이완 · 성희주</div>
+      <div class="my-email">withee@example.com</div>
+    </div>
+    <button class="my-edit-btn" onclick="showToast('프로필 편집')">편집</button>
+  </div>
+
+  <div class="my-section">
+    <div class="my-sec-title">참석자 페이지 구성</div>
+    <div class="toggle-list" id="toggleList"></div>
+  </div>
+
+  <div class="my-section">
+    <div class="my-sec-title">사진 설정</div>
+    <div class="toggle-list">
+      <div class="toggle-row">
+        <div class="tr-left">
+          <div><div class="tr-label">사진 업로드 허용</div><div class="tr-sub">참석자가 사진을 올릴 수 있어요</div></div>
+        </div>
+        <label class="toggle-switch"><input type="checkbox" checked onchange="showToast(this.checked?'업로드 허용됨':'업로드 차단됨')"><span class="toggle-slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div class="tr-left">
+          <div><div class="tr-label">업로드 마감일 설정</div><div class="tr-sub">2026. 09. 12 까지</div></div>
+        </div>
+        <label class="toggle-switch"><input type="checkbox" checked onchange="showToast('마감일 변경')"><span class="toggle-slider"></span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="my-section">
+    <div class="my-sec-title">이벤트 관리</div>
+    <div class="toggle-list">
+      <div class="toggle-row has-arrow" onclick="showToast('이벤트 정보 편집')">
+        <div class="tr-label">이벤트 정보 편집</div>
+        <span class="tr-arrow">›</span>
+      </div>
+      <div class="toggle-row has-arrow" onclick="showToast('플랜 업그레이드')">
+        <div class="tr-label">저장 플랜 변경</div>
+        <span class="tr-arrow">›</span>
+      </div>
+      <div class="toggle-row has-arrow" onclick="showToast('알림 설정')">
+        <div class="tr-label">알림 설정</div>
+        <span class="tr-arrow">›</span>
+      </div>
+      <div class="toggle-row has-arrow" onclick="showToast('로그아웃')">
+        <div class="tr-label" style="color:#c82014">로그아웃</div>
+        <span class="tr-arrow">›</span>
+      </div>
+    </div>
+  </div>
+  </div><!-- /inner padding -->
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// D-day
+const wDate = new Date('2026-09-05T12:00:00');
+function calcDday(){
+  const d = Math.max(0, Math.floor((wDate - new Date())/86400000));
+  document.getElementById('ddayStat').textContent = 'D-'+d;
+  document.getElementById('ddayNum').textContent = d;
+}
+calcDday();
+
+// Tab
+function switchTab(id, el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-'+id).classList.add('active');
+}
+function openMyPage(){
+  document.getElementById('panel-my').style.display='block';
+}
+function closeMyPage(){
+  document.getElementById('panel-my').style.display='none';
+}
+function switchTabById(id){
+  const map={home:'홈',photos:'사진',guest:'방명록',qr:'QR',my:'마이'};
+  const tab=[...document.querySelectorAll('.tab')].find(t=>t.textContent===map[id]);
+  if(tab) switchTab(id,tab);
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
+}
+function copyLink(){
+  navigator.clipboard.writeText('https://withee-mu.vercel.app').catch(()=>{});
+  showToast('링크가 복사되었어요');
+}
+
+// Senders data
+const senders=[
+  {name:'김민준',cnt:8,time:'오후 2:34',color:'#d4c4b8'},
+  {name:'이서연',cnt:6,time:'오후 3:12',color:'#c8b8aa'},
+  {name:'박지호',cnt:5,time:'오후 1:55',color:'#ddd0c4'},
+  {name:'최유나',cnt:4,time:'오후 4:02',color:'#c4b4a4'},
+  {name:'정현우',cnt:3,time:'오후 2:18',color:'#d0c0b0'},
+  {name:'강지민',cnt:3,time:'오후 3:44',color:'#ccc0b4'},
+  {name:'윤수빈',cnt:3,time:'오후 5:01',color:'#d8ccc0'},
+  {name:'임태양',cnt:2,time:'오후 2:55',color:'#c8bca8'},
+  {name:'오다은',cnt:2,time:'오후 6:10',color:'#d4c8b4'},
+  {name:'한재원',cnt:2,time:'오후 1:22',color:'#ccbcac'},
+  {name:'신민아',cnt:2,time:'오후 4:30',color:'#d0c4b0'},
+  {name:'류성진',cnt:2,time:'오후 3:05',color:'#c4b8a4'},
+  {name:'박소윤',cnt:1,time:'오후 2:10',color:'#cac0b0'},
+  {name:'홍서준',cnt:1,time:'오후 5:20',color:'#d2c4b6'},
+  {name:'장나은',cnt:1,time:'오후 4:55',color:'#c6baa8'},
+];
+
+// GRID VIEW
+let isGrid=true;
+const grid=document.getElementById('photoGrid');
+senders.forEach(s=>{
+  const d=document.createElement('div');
+  d.className='ph-item';
+  const lbl = s.cnt>=30?'30+':String(s.cnt);
+  d.innerHTML=`
+    <div class="ph-thumb" style="background:${s.color}">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="2" y="6" width="24" height="18" rx="3" stroke="rgba(56,45,37,.2)" stroke-width="1.5"/><circle cx="10" cy="14" r="3" stroke="rgba(56,45,37,.2)" stroke-width="1.2"/><path d="M2 20l6-5 4 3.5 5-5 9 7" stroke="rgba(56,45,37,.15)" stroke-width="1.2" stroke-linecap="round"/></svg>
+    </div>
+    <div class="ph-name-badge">${s.name}</div>
+    <div class="ph-count-badge">${lbl}</div>
+    <div class="ph-check"></div>
+  `;
+  d.onclick=()=>openFolder(s);
+  grid.appendChild(d);
+});
+
+// LIST VIEW
+const sl=document.getElementById('senderList');
+senders.forEach(s=>{
+  const d=document.createElement('div');
+  d.className='sender-row';
+  d.innerHTML=`
+    <div class="sender-av">${s.name[0]}</div>
+    <div class="sender-info">
+      <div class="sender-name">${s.name}</div>
+      <div class="sender-meta">${s.time} 업로드</div>
+    </div>
+    <div class="sender-cnt">${s.cnt}장</div>
+  `;
+  d.onclick=()=>openFolder(s);
+  sl.appendChild(d);
+});
+
+function toggleView(){
+  isGrid=!isGrid;
+  document.getElementById('photoGrid').style.display=isGrid?'grid':'none';
+  document.getElementById('senderList').style.display=isGrid?'none':'flex';
+  document.getElementById('viewToggleBtn').textContent=isGrid?'목록보기':'그리드보기';
+}
+
+// FOLDER VIEW
+function openFolder(s){
+  document.getElementById('photoMain').style.display='none';
+  const fv=document.getElementById('folderView');
+  fv.style.display='block';
+  document.getElementById('folderName').textContent=s.name+' ('+s.cnt+'장)';
+  const fg=document.getElementById('folderGrid');
+  fg.innerHTML='';
+  for(let i=0;i<s.cnt;i++){
+    const d=document.createElement('div');
+    d.className='folder-ph';
+    d.style.background=s.color;
+    d.innerHTML=`<svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="2" y="6" width="24" height="18" rx="3" stroke="rgba(56,45,37,.2)" stroke-width="1.5"/><circle cx="10" cy="14" r="3" stroke="rgba(56,45,37,.2)" stroke-width="1.2"/><path d="M2 20l6-5 4 3.5 5-5 9 7" stroke="rgba(56,45,37,.15)" stroke-width="1.2" stroke-linecap="round"/></svg>`;
+    fg.appendChild(d);
+  }
+}
+function closeFolder(){
+  document.getElementById('folderView').style.display='none';
+  document.getElementById('photoMain').style.display='block';
+}
+
+// GUESTBOOK
+const guests=[
+  {name:'김민준',time:'오후 2:35',msg:'두 분 결혼을 진심으로 축하드려요! 항상 행복하세요 😊'},
+  {name:'이서연',time:'오후 3:13',msg:'이완 오빠, 성희주 언니! 너무 잘 어울려요. 오래오래 행복하게 살아요.'},
+  {name:'박지민',time:'어제',msg:'결혼 축하해! 좋은 날 함께할 수 있어서 행복했어. 앞날에 늘 좋은 일만 가득하길.'},
+  {name:'최유나',time:'어제',msg:'예쁜 두 분, 평생 손잡고 걸어가세요. 결혼 진심으로 축하드립니다.'},
+  {name:'정현우',time:'2일 전',msg:'형, 드디어 결혼하네! 축하해요~ 행복하게 살아요!'},
+  {name:'강지민',time:'2일 전',msg:'두 분의 시작을 진심으로 응원합니다. 늘 건강하고 행복하세요!'},
+];
+const gl=document.getElementById('guestList');
+guests.forEach(g=>{
+  const d=document.createElement('div');
+  d.className='guest-card';
+  d.innerHTML=`<div class="gc-header"><span class="gc-name">${g.name}</span><span class="gc-time">${g.time}</span></div><p class="gc-msg">${g.msg}</p>`;
+  gl.appendChild(d);
+});
+
+// MY PAGE toggles
+const toggleItems=[
+  {label:'로딩화면',sub:'봉투 열기 애니메이션',on:true},
+  {label:'달력',sub:'날짜 카운트다운',on:true},
+  {label:'갤러리',sub:'커플 사진 슬라이드',on:true},
+  {label:'오시는 길',sub:'지도 및 교통수단',on:true},
+  {label:'방명록',sub:'참석자 메시지 작성',on:false},
+  {label:'계좌번호',sub:'마음 전하실 곳',on:true},
+  {label:'사진 전달하기',sub:'게스트스냅 섹션',on:true},
+  {label:'카카오 공유',sub:'초대장 카카오톡 공유',on:true},
+  {label:'참석 여부 RSVP',sub:'참석 인원 사전 조율',on:false},
+];
+const tl=document.getElementById('toggleList');
+toggleItems.forEach(item=>{
+  const d=document.createElement('div');
+  d.className='toggle-row';
+  d.innerHTML=`
+    <div class="tr-left">
+      <div><div class="tr-label">${item.label}</div><div class="tr-sub">${item.sub}</div></div>
+    </div>
+    <label class="toggle-switch"><input type="checkbox" ${item.on?'checked':''} onchange="showToast('${item.label} '+(this.checked?'켜짐':'꺼짐'))"><span class="toggle-slider"></span></label>
+  `;
+  tl.appendChild(d);
+});
+</script>
+</body>
+</html>
